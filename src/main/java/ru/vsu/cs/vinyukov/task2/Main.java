@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private HBox gameBoard;
     private Scene scene;
+    private GameManager gameManager;
+    private Button nextTurnButton;
 
     public static void main(String[] args) {
         launch(args);
@@ -19,12 +21,17 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         gameBoard = new HBox();
-        gameBoard.getSpacing();
+        gameBoard.setSpacing(10);
         gameBoard.setAlignment(Pos.CENTER);
 
         VBox root = new VBox();
         Button startButton = new Button("Начать игру");
         startButton.setOnAction(e -> handleStartGame());
+
+        nextTurnButton = new Button("Следующий ход");
+        nextTurnButton.setId("nextTurnButton");
+        nextTurnButton.setDisable(true);
+        nextTurnButton.setOnAction(e -> handleStartGame());
 
         root.getChildren().addAll(gameBoard, startButton);
         scene = new Scene(root, 800, 600);
@@ -34,11 +41,31 @@ public class Main extends Application {
     }
 
     private void handleStartGame() {
-        System.out.println("Начало игры");
-        GameManager manager = new DominoGameManager(
+        gameManager = new DominoGameManager(
                 new Player[]{
                         new DominoPlayer("Игрок 1"), new DominoPlayer("Игрок 2")
                 });
-        manager.startGame();
+        gameManager.startGame();
+        updateUI();
+        nextTurnButton.setDisable(false);
+    }
+
+    private void handleNextTurn() {
+        gameManager.nextTurn();
+        updateUI();
+        checkEndGame();
+    }
+
+    private void checkEndGame() {
+        if (gameManager.isGameOver()) {
+            System.exit(0);
+        }
+    }
+
+    private void updateUI() {
+        gameBoard.getChildren().clear();
+        for (DominoSlice tile : gameManager.getGameTable().getTableTiles()) {
+            gameBoard.getChildren().add(new View(tile));
+        }
     }
 }

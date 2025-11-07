@@ -1,7 +1,6 @@
 package ru.vsu.cs.vinyukov.task2;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class DominoGameManager implements GameManager{
     private Queue<Player> playerQueue;
@@ -13,22 +12,26 @@ public class DominoGameManager implements GameManager{
         for (Player player : players) {
             playerQueue.add(player);
         }
-        distributeTiles();
+        distributeTiles(generateTiles());
     }
 
-    private void distributeTiles() {
-        Queue<DominoSlice> allTiles = generateTiles();
-        while (!allTiles.isEmpty()) {
+    private void distributeTiles(List<DominoSlice> allTiles) {
+        Random random = new Random();
+        List<DominoSlice> shuffledTiles = new ArrayList<>(allTiles);
+        Collections.shuffle(shuffledTiles, random);
+
+        int index = 0;
+        while (index < shuffledTiles.size()) {
             for (Player player : playerQueue) {
-                if (!allTiles.isEmpty()) {
-                    player.addTile(allTiles.remove());
+                if (index < shuffledTiles.size()) {
+                    player.addTile(shuffledTiles.get(index++));
                 }
             }
         }
     }
 
-    private static Queue<DominoSlice> generateTiles() {
-        Queue<DominoSlice> tiles = new LinkedList<>();
+    private List<DominoSlice> generateTiles() {
+        List<DominoSlice> tiles = new ArrayList<>();
         for (int i = 0; i <= 6; i++) {
             for (int j = 0; j <= 6; j++) {
                 tiles.add(new DominoTile(i, j));
@@ -39,17 +42,43 @@ public class DominoGameManager implements GameManager{
 
     @Override
     public void startGame() {
-        System.out.println("Игра началась!");
-        Player firstPlayer = playerQueue.peek();
-        DominoSlice firstTile = firstPlayer.getTiles().remove(0);
-        gameTable.placeTile(firstTile);
-        System.out.println("Первый игрок положил первую костяшку");
+         Player firstPlayer = findBiggestDouble();
+         if (firstPlayer != null && !firstPlayer.getTiles().isEmpty()) {
+             for (DominoSlice tile : firstPlayer.getTiles()) {
+                 if (tile.isDouble()) {
+                     firstPlayer.getTiles().remove(tile);
+                     gameTable.placeTile(tile);
+                     break;
+                 }
+             }
+         }
+    }
+
+    private Player findBiggestDouble() {
+        Player playerWithDouble = null;
+        int maxVal = -1;
+        for (Player player : playerQueue) {
+            for (DominoSlice tile : player.getTiles()) {
+                if (tile.isDouble() && tile.getLeftVal() > maxVal) {
+                    maxVal = tile.getLeftVal();
+                    playerWithDouble = player;
+                }
+            }
+        }
+        return playerWithDouble;
     }
 
     @Override
     public boolean nextTurn() {
         Player currentPlayer = playerQueue.poll();
-        playerQueue.add(currentPlayer);
+        if (currentPlayer.hasNextMove(gameTable)) {
+            DominoSlice chosenTile = currentPlayer.chooseNextMove(gameTable);
+            if (chosenTile != null) {
+                currentPlayer.getTiles().remove(chosenTile);
+                gameTable.placeTile(chosenTile);
+            }
+        }
+        playerQueue.add(playerQueue.poll());
         return true;
     }
 
@@ -65,6 +94,6 @@ public class DominoGameManager implements GameManager{
 
     @Override
     public boolean isGameOver() {
-        return false;
+        return playerQueue.stream().anyMatch(p -> p.getTiles().isEmpty());
     }
 }
