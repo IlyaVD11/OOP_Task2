@@ -5,5 +5,5 @@ import java.util.List;
 public interface GameTable {
     void placeTile(DominoSlice tile);
     List<DominoSlice> getTableTiles();
-    boolean canPlaceTile();
+    boolean canPlaceTile(DominoSlice tile);
 }
