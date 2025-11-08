@@ -28,4 +28,8 @@ public class DominoTile implements DominoSlice{
     public String toString() {
         return "[" + leftVal + "|" + rightVal + "]";
     }
+
+    public DominoSlice flip() {
+        return new DominoTile(rightVal, leftVal);
+    }
 }

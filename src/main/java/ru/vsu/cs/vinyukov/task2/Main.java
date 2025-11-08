@@ -21,7 +21,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         gameBoard = new HBox();
-        gameBoard.setSpacing(10);
         gameBoard.setAlignment(Pos.CENTER);
 
         VBox root = new VBox();
@@ -33,7 +32,7 @@ public class Main extends Application {
         nextTurnButton.setDisable(true);
         nextTurnButton.setOnAction(e -> handleNextTurn());
 
-        root.getChildren().addAll(gameBoard, startButton);
+        root.getChildren().addAll(gameBoard, startButton, nextTurnButton);
         scene = new Scene(root, 800, 600);
         primaryStage.setTitle("Домино");
         primaryStage.setScene(scene);
@@ -65,7 +64,8 @@ public class Main extends Application {
     private void updateUI() {
         gameBoard.getChildren().clear();
         for (DominoSlice tile : gameManager.getGameTable().getTableTiles()) {
-            gameBoard.getChildren().add(new View(tile));
+            View view = new View(tile);
+            gameBoard.getChildren().add(view);
         }
     }
 }

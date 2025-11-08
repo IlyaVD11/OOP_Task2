@@ -33,6 +33,10 @@ public class DominoPlayer implements Player{
             if (table.canPlaceTile(tile)) {
                 return true;
             }
+            DominoSlice flippedTile = new DominoTile(tile.getRightVal(), tile.getLeftVal());
+            if (table.canPlaceTile(flippedTile)) {
+                return true;
+            }
         }
         return false;
     }
@@ -42,6 +46,10 @@ public class DominoPlayer implements Player{
         for (DominoSlice tile : tiles) {
             if (table.canPlaceTile(tile)) {
                 return tile;
+            }
+            DominoSlice flippedTile = new DominoTile(tile.getRightVal(), tile.getLeftVal());
+            if (table.canPlaceTile(flippedTile)) {
+                return flippedTile;
             }
         }
         return null;

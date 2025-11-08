@@ -12,7 +12,17 @@ public class DefaultGameTable implements GameTable{
 
     @Override
     public void placeTile(DominoSlice tile) {
-        tableTiles.add(tile);
+        if (tableTiles.isEmpty()) {
+            tableTiles.add(tile);
+            return;
+        }
+
+        DominoSlice lastTile = tableTiles.get(tableTiles.size() - 1);
+        if (lastTile.getRightVal() == ((DominoTile) tile).getLeftVal()) {
+            tableTiles.add((DominoTile) tile);
+        } else if (lastTile.getRightVal() == ((DominoTile) tile).getRightVal()) {
+            tableTiles.add(((DominoTile) tile).flip());
+        }
     }
 
     @Override

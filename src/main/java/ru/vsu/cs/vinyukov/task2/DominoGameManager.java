@@ -5,6 +5,7 @@ import java.util.*;
 public class DominoGameManager implements GameManager{
     private Queue<Player> playerQueue;
     private GameTable gameTable;
+    private List<DominoSlice> reserve;
 
     public DominoGameManager(Player[] players) {
         gameTable = new DefaultGameTable();
@@ -12,22 +13,19 @@ public class DominoGameManager implements GameManager{
         for (Player player : players) {
             playerQueue.add(player);
         }
-        distributeTiles(generateTiles());
+        List<DominoSlice> allTiles = generateTiles();
+        distributeTiles(allTiles);
     }
 
     private void distributeTiles(List<DominoSlice> allTiles) {
         Random random = new Random();
-        List<DominoSlice> shuffledTiles = new ArrayList<>(allTiles);
-        Collections.shuffle(shuffledTiles, random);
+        Collections.shuffle(allTiles, random);
 
-        int index = 0;
-        while (index < shuffledTiles.size()) {
-            for (Player player : playerQueue) {
-                if (index < shuffledTiles.size()) {
-                    player.addTile(shuffledTiles.get(index++));
-                }
-            }
+        for (int i = 0; i < 7 * playerQueue.size(); i++) {
+            playerQueue.element().addTile(allTiles.remove(0));
+            playerQueue.offer(playerQueue.poll());
         }
+        reserve = allTiles;
     }
 
     private List<DominoSlice> generateTiles() {
@@ -71,15 +69,22 @@ public class DominoGameManager implements GameManager{
     @Override
     public boolean nextTurn() {
         Player currentPlayer = playerQueue.poll();
-        if (currentPlayer.hasNextMove(gameTable)) {
-            DominoSlice chosenTile = currentPlayer.chooseNextMove(gameTable);
-            if (chosenTile != null) {
-                currentPlayer.getTiles().remove(chosenTile);
-                gameTable.placeTile(chosenTile);
+        boolean madeMove = false;
+        Random random = new Random();
+
+        while (!madeMove && !reserve.isEmpty()) {
+            if (currentPlayer.hasNextMove(gameTable)) {
+                DominoSlice tile = currentPlayer.chooseNextMove(gameTable);
+                currentPlayer.getTiles().remove(tile);
+                gameTable.placeTile(tile);
+                madeMove = true;
+            } else {
+                DominoSlice takenFromReserve = reserve.remove(random.nextInt(reserve.size()));
+                currentPlayer.addTile(takenFromReserve);
             }
         }
-        playerQueue.add(playerQueue.poll());
-        return true;
+        playerQueue.offer(currentPlayer);
+        return madeMove;
     }
 
     @Override
