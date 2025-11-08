@@ -29,7 +29,9 @@ public class DefaultGameTable implements GameTable{
         DominoSlice lastTile = tableTiles.get(tableTiles.size() - 1);
         return (
             tile.getLeftVal() == lastTile.getRightVal() ||
-            tile.getRightVal() == firstTile.getLeftVal()
+            tile.getRightVal() == lastTile.getRightVal() ||
+            tile.getRightVal() == firstTile.getLeftVal() ||
+            tile.getLeftVal() == firstTile.getLeftVal()
         );
     }
 }

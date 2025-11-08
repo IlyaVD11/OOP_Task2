@@ -31,7 +31,7 @@ public class Main extends Application {
         nextTurnButton = new Button("Следующий ход");
         nextTurnButton.setId("nextTurnButton");
         nextTurnButton.setDisable(true);
-        nextTurnButton.setOnAction(e -> handleStartGame());
+        nextTurnButton.setOnAction(e -> handleNextTurn());
 
         root.getChildren().addAll(gameBoard, startButton);
         scene = new Scene(root, 800, 600);
