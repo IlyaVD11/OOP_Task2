@@ -88,11 +88,6 @@ public class DominoGameManager implements GameManager{
     }
 
     @Override
-    public Player getCurrentPlayer() {
-        return playerQueue.peek();
-    }
-
-    @Override
     public GameTable getGameTable() {
         return gameTable;
     }

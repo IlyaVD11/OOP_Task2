@@ -4,17 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DominoPlayer implements Player{
-    private String name;
     private List<DominoSlice> tiles;
 
-    public DominoPlayer(String name) {
-        this.name = name;
+    public DominoPlayer() {
         this.tiles = new ArrayList<>();
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

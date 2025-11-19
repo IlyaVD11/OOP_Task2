@@ -4,4 +4,5 @@ public interface DominoSlice {
     int getLeftVal();
     int getRightVal();
     boolean isDouble();
+    DominoSlice flip();
 }

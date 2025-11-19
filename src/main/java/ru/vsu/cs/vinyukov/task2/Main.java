@@ -42,7 +42,7 @@ public class Main extends Application {
     private void handleStartGame() {
         gameManager = new DominoGameManager(
                 new Player[]{
-                        new DominoPlayer("Игрок 1"), new DominoPlayer("Игрок 2")
+                        new DominoPlayer(), new DominoPlayer()
                 });
         gameManager.startGame();
         updateUI();

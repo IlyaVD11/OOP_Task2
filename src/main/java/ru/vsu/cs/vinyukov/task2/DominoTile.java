@@ -29,6 +29,7 @@ public class DominoTile implements DominoSlice{
         return "[" + leftVal + "|" + rightVal + "]";
     }
 
+    @Override
     public DominoSlice flip() {
         return new DominoTile(rightVal, leftVal);
     }

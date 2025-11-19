@@ -18,10 +18,10 @@ public class DefaultGameTable implements GameTable{
         }
 
         DominoSlice lastTile = tableTiles.get(tableTiles.size() - 1);
-        if (lastTile.getRightVal() == ((DominoTile) tile).getLeftVal()) {
-            tableTiles.add((DominoTile) tile);
-        } else if (lastTile.getRightVal() == ((DominoTile) tile).getRightVal()) {
-            tableTiles.add(((DominoTile) tile).flip());
+        if (lastTile.getRightVal() == tile.getLeftVal()) {
+            tableTiles.add(tile);
+        } else if (lastTile.getRightVal() == tile.getRightVal()) {
+            tableTiles.add(tile.flip());
         }
     }
 
