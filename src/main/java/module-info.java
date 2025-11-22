@@ -13,4 +13,10 @@ module ru.vsu.cs.vinyukov.task2 {
 
     opens ru.vsu.cs.vinyukov.task2 to javafx.fxml;
     exports ru.vsu.cs.vinyukov.task2;
+    exports ru.vsu.cs.vinyukov.task2.model;
+    opens ru.vsu.cs.vinyukov.task2.model to javafx.fxml;
+    exports ru.vsu.cs.vinyukov.task2.service;
+    opens ru.vsu.cs.vinyukov.task2.service to javafx.fxml;
+    exports ru.vsu.cs.vinyukov.task2.ui;
+    opens ru.vsu.cs.vinyukov.task2.ui to javafx.fxml;
 }

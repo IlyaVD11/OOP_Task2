@@ -1,9 +1,10 @@
-package ru.vsu.cs.vinyukov.task2;
+package ru.vsu.cs.vinyukov.task2.ui;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import ru.vsu.cs.vinyukov.task2.model.DominoSlice;
 
 
 public class View extends StackPane {

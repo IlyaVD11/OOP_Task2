@@ -1,6 +1,6 @@
-package ru.vsu.cs.vinyukov.task2;
+package ru.vsu.cs.vinyukov.task2.model;
 
-public class DominoTile implements DominoSlice{
+public class DominoTile implements DominoSlice {
     private final int leftVal;
     private final int rightVal;
 

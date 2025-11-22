@@ -1,4 +1,4 @@
-package ru.vsu.cs.vinyukov.task2;
+package ru.vsu.cs.vinyukov.task2.model;
 
 import java.util.List;
 

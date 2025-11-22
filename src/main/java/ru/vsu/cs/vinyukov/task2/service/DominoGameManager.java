@@ -1,8 +1,10 @@
-package ru.vsu.cs.vinyukov.task2;
+package ru.vsu.cs.vinyukov.task2.service;
+
+import ru.vsu.cs.vinyukov.task2.model.*;
 
 import java.util.*;
 
-public class DominoGameManager implements GameManager{
+public class DominoGameManager implements GameManager {
     private Queue<Player> playerQueue;
     private GameTable gameTable;
     private List<DominoSlice> reserve;

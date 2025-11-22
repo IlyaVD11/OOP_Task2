@@ -7,6 +7,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.vsu.cs.vinyukov.task2.model.DominoPlayer;
+import ru.vsu.cs.vinyukov.task2.model.DominoSlice;
+import ru.vsu.cs.vinyukov.task2.model.Player;
+import ru.vsu.cs.vinyukov.task2.service.DominoGameManager;
+import ru.vsu.cs.vinyukov.task2.service.GameManager;
+import ru.vsu.cs.vinyukov.task2.ui.View;
 
 public class Main extends Application {
     private HBox gameBoard;
