@@ -8,13 +8,18 @@ public class DominoGameManager implements GameManager {
     private Queue<Player> playerQueue;
     private GameTable gameTable;
     private List<DominoSlice> reserve;
+    private Map<Player, List<DominoSlice>> playerWithTiles;
 
     public DominoGameManager(Player[] players) {
         gameTable = new DefaultGameTable();
         playerQueue = new LinkedList<>();
         for (Player player : players) {
             playerQueue.add(player);
+            if (player instanceof DominoPlayer) {
+                ((DominoPlayer) player).setGameManager(this);
+            }
         }
+        playerWithTiles = new HashMap<>();
         List<DominoSlice> allTiles = generateTiles();
         distributeTiles(allTiles);
     }
@@ -23,9 +28,12 @@ public class DominoGameManager implements GameManager {
         Random random = new Random();
         Collections.shuffle(allTiles, random);
 
-        for (int i = 0; i < 7 * playerQueue.size(); i++) {
-            playerQueue.element().addTile(allTiles.remove(0));
-            playerQueue.offer(playerQueue.poll());
+        for (Player player : playerQueue) {
+            List<DominoSlice> playerHand = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                playerHand.add(allTiles.remove(0));
+            }
+            playerWithTiles.put(player, playerHand);
         }
         reserve = allTiles;
     }
@@ -41,12 +49,31 @@ public class DominoGameManager implements GameManager {
     }
 
     @Override
+    public List<DominoSlice> getPlayerTiles(Player player) {
+        return playerWithTiles.getOrDefault(player, Collections.emptyList());
+    }
+
+    @Override
+    public void removeTile(Player player, DominoSlice tile) {
+        List<DominoSlice> playerHand = playerWithTiles.get(player);
+        if (playerHand != null) {
+            playerHand.remove(tile);
+        }
+    }
+
+    @Override
+    public void giveTileToPlayer(Player player, DominoSlice tile) {
+        List<DominoSlice> playerHand = playerWithTiles.computeIfAbsent(player, k -> new ArrayList<>());
+        playerHand.add(tile);
+    }
+
+    @Override
     public void startGame() {
          Player firstPlayer = findBiggestDouble();
-         if (firstPlayer != null && !firstPlayer.getTiles().isEmpty()) {
-             for (DominoSlice tile : firstPlayer.getTiles()) {
+         if (firstPlayer != null && !playerWithTiles.get(firstPlayer).isEmpty()) {
+             for (DominoSlice tile : playerWithTiles.get(firstPlayer)) {
                  if (tile.isDouble()) {
-                     firstPlayer.getTiles().remove(tile);
+                     playerWithTiles.get(firstPlayer).remove(tile);
                      gameTable.placeTile(tile);
                      break;
                  }
@@ -58,7 +85,7 @@ public class DominoGameManager implements GameManager {
         Player playerWithDouble = null;
         int maxVal = -1;
         for (Player player : playerQueue) {
-            for (DominoSlice tile : player.getTiles()) {
+            for (DominoSlice tile : playerWithTiles.get(player)) {
                 if (tile.isDouble() && tile.getLeftVal() > maxVal) {
                     maxVal = tile.getLeftVal();
                     playerWithDouble = player;
@@ -77,12 +104,12 @@ public class DominoGameManager implements GameManager {
         while (!madeMove && !reserve.isEmpty()) {
             if (currentPlayer.hasNextMove(gameTable)) {
                 DominoSlice tile = currentPlayer.chooseNextMove(gameTable);
-                currentPlayer.getTiles().remove(tile);
+                removeTile(currentPlayer, tile);
                 gameTable.placeTile(tile);
                 madeMove = true;
             } else {
                 DominoSlice takenFromReserve = reserve.remove(random.nextInt(reserve.size()));
-                currentPlayer.addTile(takenFromReserve);
+                giveTileToPlayer(currentPlayer, takenFromReserve);
             }
         }
         playerQueue.offer(currentPlayer);
@@ -96,6 +123,6 @@ public class DominoGameManager implements GameManager {
 
     @Override
     public boolean isGameOver() {
-        return playerQueue.stream().anyMatch(p -> p.getTiles().isEmpty());
+        return playerQueue.stream().anyMatch(p -> playerWithTiles.get(p).isEmpty());
     }
 }

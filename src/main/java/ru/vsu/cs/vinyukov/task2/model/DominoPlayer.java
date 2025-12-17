@@ -1,32 +1,24 @@
 package ru.vsu.cs.vinyukov.task2.model;
 
-import java.util.ArrayList;
+import ru.vsu.cs.vinyukov.task2.service.GameManager;
+
 import java.util.List;
 
 public class DominoPlayer implements Player {
-    private List<DominoSlice> tiles;
+    private GameManager gameManager;
 
-    public DominoPlayer() {
-        this.tiles = new ArrayList<>();
-    }
-
-    @Override
-    public List<DominoSlice> getTiles() {
-        return tiles;
-    }
-
-    @Override
-    public void addTile(DominoSlice tile) {
-        tiles.add(tile);
+    public void setGameManager(GameManager manager) {
+        this.gameManager = manager;
     }
 
     @Override
     public boolean hasNextMove(GameTable table) {
+        List<DominoSlice> tiles = gameManager.getPlayerTiles(this);
         for (DominoSlice tile : tiles) {
             if (table.canPlaceTile(tile)) {
                 return true;
             }
-            DominoSlice flippedTile = new DominoTile(tile.getRightVal(), tile.getLeftVal());
+            DominoSlice flippedTile = tile.flip();
             if (table.canPlaceTile(flippedTile)) {
                 return true;
             }
@@ -36,11 +28,12 @@ public class DominoPlayer implements Player {
 
     @Override
     public DominoSlice chooseNextMove(GameTable table) {
+        List<DominoSlice> tiles = gameManager.getPlayerTiles(this);
         for (DominoSlice tile : tiles) {
             if (table.canPlaceTile(tile)) {
                 return tile;
             }
-            DominoSlice flippedTile = new DominoTile(tile.getRightVal(), tile.getLeftVal());
+            DominoSlice flippedTile = tile.flip();
             if (table.canPlaceTile(flippedTile)) {
                 return flippedTile;
             }

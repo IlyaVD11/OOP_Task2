@@ -130,7 +130,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>ru.vsu.cs.vinyukov.task2.Main</mainClass>
+              <mainClass>ru.vsu.cs.vinyukov.task2.ui.Main</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
