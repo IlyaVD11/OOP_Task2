@@ -4,20 +4,15 @@ import ru.vsu.cs.vinyukov.task2.model.*;
 
 import java.util.*;
 
+import static ru.vsu.cs.vinyukov.task2.model.Game.*;
+
 public class DominoGameManager implements GameManager {
-    private Queue<Player> playerQueue;
-    private GameTable gameTable;
-    private List<DominoSlice> reserve;
-    private Map<Player, List<DominoSlice>> playerWithTiles;
 
     public DominoGameManager(Player[] players) {
         gameTable = new DefaultGameTable();
         playerQueue = new LinkedList<>();
         for (Player player : players) {
             playerQueue.add(player);
-            if (player instanceof DominoPlayer) {
-                ((DominoPlayer) player).setGameManager(this);
-            }
         }
         playerWithTiles = new HashMap<>();
         List<DominoSlice> allTiles = generateTiles();
@@ -35,7 +30,7 @@ public class DominoGameManager implements GameManager {
             }
             playerWithTiles.put(player, playerHand);
         }
-        reserve = allTiles;
+        Game.reserve = allTiles;
     }
 
     private List<DominoSlice> generateTiles() {
@@ -46,6 +41,41 @@ public class DominoGameManager implements GameManager {
             }
         }
         return tiles;
+    }
+
+    @Override
+    public String getActivePlayerName() {
+        return playerQueue.peek().getName();
+    }
+
+    @Override
+    public boolean hasNextMove(GameTable table, Player player) {
+        List<DominoSlice> tiles = getPlayerTiles(player);
+        for (DominoSlice tile : tiles) {
+            if (table.canPlaceTile(tile)) {
+                return true;
+            }
+            DominoSlice flippedTile = tile.flip();
+            if (table.canPlaceTile(flippedTile)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public DominoSlice chooseNextMove(GameTable table, Player player) {
+        List<DominoSlice> tiles = getPlayerTiles(player);
+        for (DominoSlice tile : tiles) {
+            if (table.canPlaceTile(tile)) {
+                return tile;
+            }
+            DominoSlice flippedTile = tile.flip();
+            if (table.canPlaceTile(flippedTile)) {
+                return flippedTile;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -102,8 +132,8 @@ public class DominoGameManager implements GameManager {
         Random random = new Random();
 
         while (!madeMove && !reserve.isEmpty()) {
-            if (currentPlayer.hasNextMove(gameTable)) {
-                DominoSlice tile = currentPlayer.chooseNextMove(gameTable);
+            if (hasNextMove(getGameTable(), currentPlayer)) {
+                DominoSlice tile = chooseNextMove(gameTable, currentPlayer);
                 removeTile(currentPlayer, tile);
                 gameTable.placeTile(tile);
                 madeMove = true;

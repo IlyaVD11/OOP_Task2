@@ -14,4 +14,7 @@ public interface GameManager {
     List<DominoSlice> getPlayerTiles(Player player);
     void removeTile(Player player, DominoSlice tile);
     void giveTileToPlayer(Player player, DominoSlice tile);
+    boolean hasNextMove(GameTable table, Player player);
+    DominoSlice chooseNextMove(GameTable table, Player player);
+    String getActivePlayerName();
 }
