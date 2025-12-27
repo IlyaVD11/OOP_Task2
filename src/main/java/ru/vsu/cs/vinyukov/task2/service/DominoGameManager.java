@@ -11,9 +11,7 @@ public class DominoGameManager implements GameManager {
     public DominoGameManager(Player[] players) {
         gameTable = new DefaultGameTable();
         playerQueue = new LinkedList<>();
-        for (Player player : players) {
-            playerQueue.add(player);
-        }
+        Collections.addAll(playerQueue, players);
         playerWithTiles = new HashMap<>();
         List<DominoSlice> allTiles = generateTiles();
         distributeTiles(allTiles);
